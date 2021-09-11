@@ -1,4 +1,5 @@
 import axios from "axios";
+import Paginacao from "components/Paginacao";
 import { useEffect } from "react";
 import { useState } from "react";
 import { VendaPage } from "types/venda";
@@ -7,6 +8,7 @@ import { BASE_URL } from "utils/requests";
 
 const DataTable = () => {
 
+    const [pageAtiva, setPageAtiva] = useState(0);
     const [page, setPage] = useState<VendaPage>({
         last: true,
         totalElements: 0,
@@ -16,15 +18,18 @@ const DataTable = () => {
     });
 
     useEffect(() => {
-        axios.get(`${BASE_URL}/vendas?page=0&size=10&sort=data,desc`)
+        axios.get(`${BASE_URL}/vendas?page=${pageAtiva}&size=10&sort=data,desc`)
             .then(response => {
                 setPage(response.data);
             })
-    }, [])
+    }, [pageAtiva])
 
+    const changePage = (index: number) => setPageAtiva(index);
+    
 
     return (
         <>
+             <Paginacao page={page} onPageChange={changePage} />
             <div className="table-responsive">
                 <table className="table table-striped table-sm">
                     <thead>
